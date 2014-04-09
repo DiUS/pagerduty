@@ -39,10 +39,11 @@ protected
 
     url = URI.parse("https://events.pagerduty.com/generic/2010-04-15/create_event.json")
     http = Net::HTTP.new(url.host, url.port)
-    http.use_ssl = (url.scheme == 'https')
-    rootca = '/etc/ssl/certs'
-    if (File.directory?(rootca) && http.use_ssl?)
-      http.ca_path = rootca
+    http.use_ssl = true
+
+    if false
+      #disabled temporary, while we try and figure out how to get the correct cert file
+      http.ca_file = cert_file_path
       http.verify_mode = OpenSSL::SSL::VERIFY_PEER
       http.verify_depth = 5
     else
@@ -59,6 +60,10 @@ protected
     else
       res.error!
     end
+  end
+
+  def cert_file_path
+    p = File.expand_path(File.join(File.dirname(__FILE__), 'cert', 'cacert.pem'))
   end
 
 end
